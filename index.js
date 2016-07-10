@@ -9,7 +9,12 @@ const addEdge = scc.addEdge;
 const nodes = {};
 
 const counter = function (nodes) {
-    const sccSizes = findSCC(nodes);
+    const leaders = findSCCs(nodes);
+    const sccSizes = [];
+    const leaderIds = Object.keys(leaders);
+    for (var i = 0; i < leaderIds; i++) {
+        sccSizes.push(leaders[i].length);
+    }
     const sortedSccSizes = sccSizes.sort();
     console.dir(sortedSccSizes);
     const largestSCCsizes = sortedSccSizes.slice(0, 5);

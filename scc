@@ -41,26 +41,69 @@ function reverseEdges(nodes) {
     return nodesWithReversedEdges;
 }
 
-function DFS(nodes, currentVertex) {
-    currentVertex.visited=true;
-    for(var i=0;i<currentVertex.out.length;i++){
-        var outLabel=currentVertex.out[i];
-        var out=nodes[outLabel];
-        if(out.visited!==true){
-            DFS(nodes, out);
+function DFS(nodes, vertexLabel, leaderLabel, reverseEdges, onNewNodeExplored) {
+    const currentVertex = nodes[vertexLabel];
+    if (currentVertex.visited) {
+        return;
+    }
+    currentVertex.visited = true;
+    currentVertex.leader = leaderLabel;
+
+    const neighbors = reverseEdges ? currentVertex.in : currentVertex.out;
+    for (var i = 0; i < neighbors.length; i++) {
+        var neighborLabel = neighbors[i];
+        var neighbor = nodes[neighborLabel];
+        if (neighbor.visited !== true) {
+            DFS(nodes, neighborLabel, leaderLabel, reverseEdges, onNewNodeExplored);
         }
     }
+    onNewNodeExplored(vertexLabel);
+}
+function findFinishingTimes(Graph) {
+    const finishingTimes = {};
+    const labels = Object.keys(Graph).sort().reverse();
+    var t = 0;
+    var s = null;
+    const onNewNodeExplored = function onNewNodeExplored(vertexLabel) {
+        t++;
+        finishingTimes[vertexLabel] = t;
+    };
+ 
+    for (var i = 0; i < labels.length; i++) {
+        var labelIth = labels[i];
+        var currentVertex = Graph[labelIth];
+        if (currentVertex.visited === false) {
+            s = labelIth;
+            DFS(Graph, labelIth, s, true, onNewNodeExplored);
+            //finishingTimes[labelIth] = t;
+        }
+    }
+    return finishingTimes;
+}
+function findLeaders(Graph, finishingTimes) {
+    const leaders = {};
+
+    return leaders;
 }
 
-function findSCC(nodes) {
+function findSCCs(Graph) {
+    //Kosaraju's two pass:
+    // 1) run Depth-first search (aka DFS) on the reversed graph, to compute ordering of nodes
+    // by finding "finishing time" for nodes
+    const finishingTimes = findFinishingTimes(Graph);
 
+    // 3) run DFS on original graph, finding Strongly Connected Components (SCCs)
+    const leaders = findLeaders(Graph, finishingTimes);
+    // return leaders object, containing information about vertices with the same leaderId
+    return leaders;
 }
 
 module.exports = {
     Vertex: Vertex,
-    findSCC: findSCC,
+    findSCCs: findSCCs,
     addEdge: addEdge,
     nodesToEdgesArr: nodesToEdgesArr,
     reverseEdges: reverseEdges,
-    DFS:DFS
+    findFinishingTimes: findFinishingTimes,
+    DFS: DFS
 };
