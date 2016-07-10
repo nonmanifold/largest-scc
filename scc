@@ -41,20 +41,19 @@ function reverseEdges(nodes) {
     return nodesWithReversedEdges;
 }
 
-function DFS(nodes, vertexLabel, leaderLabel, reverseEdges, onNewNodeExplored) {
+function DFS(nodes, vertexLabel, reverseEdges, onNewNodeExplored) {
     const currentVertex = nodes[vertexLabel];
     if (currentVertex.visited) {
         return;
     }
     currentVertex.visited = true;
-    currentVertex.leader = leaderLabel;
 
     const neighbors = reverseEdges ? currentVertex.in : currentVertex.out;
     for (var i = 0; i < neighbors.length; i++) {
         var neighborLabel = neighbors[i];
         var neighbor = nodes[neighborLabel];
         if (neighbor.visited !== true) {
-            DFS(nodes, neighborLabel, leaderLabel, reverseEdges, onNewNodeExplored);
+            DFS(nodes, neighborLabel, reverseEdges, onNewNodeExplored);
         }
     }
     onNewNodeExplored(vertexLabel);
@@ -63,7 +62,6 @@ function findFinishingTimes(Graph) {
     const labels = Object.keys(Graph).sort().reverse();
     const finishingTimes = new Array(labels.length);
     var t = 0;
-    var s = null;
     const onNewNodeExplored = function onNewNodeExplored(vertexLabel) {
         t++;
         finishingTimes[parseInt(vertexLabel) - 1] = t;
@@ -73,8 +71,7 @@ function findFinishingTimes(Graph) {
         var labelIth = labels[i];
         var currentVertex = Graph[labelIth];
         if (currentVertex.visited === false) {
-            s = labelIth;
-            DFS(Graph, labelIth, s, true, onNewNodeExplored);
+            DFS(Graph, labelIth, true, onNewNodeExplored);
         }
     }
     return finishingTimes;
@@ -82,7 +79,25 @@ function findFinishingTimes(Graph) {
 
 function findLeaders(Graph, finishingTimes) {
     const leaders = {};
+    var s = null;
+    const onNewNodeExplored = function onNewNodeExplored(vertexLabel) {
+        if (!leaders.hasOwnProperty(s)) {
+            leaders[s] = [];
+        }
+        leaders[s].push(vertexLabel);
+    };
+    // being little sloppy, we re-set 'visited' flag on the entire graph:
+    for (var j = 0; j < finishingTimes.length; j++) {
+        s = finishingTimes[j];
+        Graph[s].visited=false;
+    }
 
+    for (var i = 0; i < finishingTimes.length; i++) {
+        s = finishingTimes[i];
+        if(Graph[s].visited===false) {
+            DFS(Graph, s, false, onNewNodeExplored);
+        }
+    }
     return leaders;
 }
 
@@ -105,5 +120,6 @@ module.exports = {
     nodesToEdgesArr: nodesToEdgesArr,
     reverseEdges: reverseEdges,
     findFinishingTimes: findFinishingTimes,
+    findLeaders: findLeaders,
     DFS: DFS
 };

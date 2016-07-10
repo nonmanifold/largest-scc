@@ -5,6 +5,7 @@ const Vertex = scc.Vertex;
 const reverseEdges = scc.reverseEdges;
 const nodesToEdgesArr = scc.nodesToEdgesArr;
 const findFinishingTimes = scc.findFinishingTimes;
+const findSCCs=scc.findSCCs;
 const DFS = scc.DFS;
 function genGraph() {
     const edges = [
@@ -43,7 +44,7 @@ assert.deepEqual(new Vertex([6], [7, 3]), nodes[9]);
 
 // check that if we start at node with label 8, we visit all nodes with DFS:
 const exploredNodesLabels = [];
-DFS(nodes, 8, 8, false, function (nodeLabel) {
+DFS(nodes, 8, false, function (nodeLabel) {
     exploredNodesLabels.push(nodeLabel);
 });
 const visitFlags = [];
@@ -88,5 +89,6 @@ assert.deepEqual([
     4,
     6
 ], findFinishingTimes(genGraph()));
-
+const anotherGraph=genGraph();
+assert.deepEqual({ '3': [ 9, 6, 3 ], '7': [ 4, 1, 7 ], '8': [ 2, 5, 8 ]}, findSCCs(anotherGraph));
 console.log('Pass');
