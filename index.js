@@ -4,7 +4,7 @@ const path = require('path');
 const fileName = '_410e934e6553ac56409b2cb7096a44aa_SCC.txt';
 const pathName = path.join('./', fileName);
 const scc = require('./scc');
-const findSCC = scc.findSCC;
+const findSCCs = scc.findSCCs;
 const addEdge = scc.addEdge;
 const nodes = {};
 
@@ -12,13 +12,13 @@ const counter = function (nodes) {
     const leaders = findSCCs(nodes);
     const sccSizes = [];
     const leaderIds = Object.keys(leaders);
-    for (var i = 0; i < leaderIds; i++) {
+    for (var i = 0; i < leaderIds.length; i++) {
         sccSizes.push(leaders[i].length);
     }
-    const sortedSccSizes = sccSizes.sort();
+    const sortedSccSizes = sccSizes.sort().reverse();
     console.dir(sortedSccSizes);
     const largestSCCsizes = sortedSccSizes.slice(0, 5);
-    console.log('minimum:' + largestSCCsizes);
+    console.log('maximum SCCs sizes:' + largestSCCsizes);
 };
 
 const rl = readline.createInterface({
