@@ -60,26 +60,26 @@ function DFS(nodes, vertexLabel, leaderLabel, reverseEdges, onNewNodeExplored) {
     onNewNodeExplored(vertexLabel);
 }
 function findFinishingTimes(Graph) {
-    const finishingTimes = {};
     const labels = Object.keys(Graph).sort().reverse();
+    const finishingTimes = new Array(labels.length);
     var t = 0;
     var s = null;
     const onNewNodeExplored = function onNewNodeExplored(vertexLabel) {
         t++;
-        finishingTimes[vertexLabel] = t;
+        finishingTimes[parseInt(vertexLabel) - 1] = t;
     };
- 
+
     for (var i = 0; i < labels.length; i++) {
         var labelIth = labels[i];
         var currentVertex = Graph[labelIth];
         if (currentVertex.visited === false) {
             s = labelIth;
             DFS(Graph, labelIth, s, true, onNewNodeExplored);
-            //finishingTimes[labelIth] = t;
         }
     }
     return finishingTimes;
 }
+
 function findLeaders(Graph, finishingTimes) {
     const leaders = {};
 

@@ -77,16 +77,16 @@ const nodesToRev = {};
 addEdge(nodesToRev, 1, 2);
 assert.deepEqual([[2, 1]], nodesToEdgesArr(reverseEdges(nodesToRev)));
 
-assert.deepEqual({
-    '1': 7,
-    '2': 3,
-    '3': 1,
-    '4': 8,
-    '5': 2,
-    '6': 5,
-    '7': 9,
-    '8': 4,
-    '9': 6
-}, findFinishingTimes(genGraph()));
+assert.deepEqual([
+    7,
+    3,
+    1,
+    8,
+    2,
+    5,
+    9,
+    4,
+    6
+], findFinishingTimes(genGraph()));
 
 console.log('Pass');
