@@ -5,9 +5,16 @@ const Vertex = scc.Vertex;
 const reverseEdges = scc.reverseEdges;
 const nodesToEdgesArr = scc.nodesToEdgesArr;
 const findFinishingTimes = scc.findFinishingTimes;
-const findSCCs=scc.findSCCs;
+const findSCCs = scc.findSCCs;
 const DFS = scc.DFS;
-function genGraph() {
+function genGraphWithEdges(edges) {
+    const nodes = {};
+    edges.map(function (edge) {
+        addEdge(nodes, edge[0], edge[1]);
+    });
+    return nodes;
+}
+function genExampleGraph() {
     const edges = [
         [1, 4],
         [7, 1],
@@ -25,13 +32,11 @@ function genGraph() {
         [5, 2],
         [2, 8]
     ];
-    const nodes = {};
-    edges.map(function (edge) {
-        addEdge(nodes, edge[0], edge[1]);
-    });
-    return nodes;
+    return genGraphWithEdges(edges);
 }
-const nodes = genGraph();
+
+
+const nodes = genExampleGraph();
 assert.deepEqual(new Vertex([7], [4]), nodes[1]);
 assert.deepEqual(new Vertex([5], [8]), nodes[2]);
 assert.deepEqual(new Vertex([9], [6]), nodes[3]);
@@ -88,7 +93,31 @@ assert.deepEqual([
     9,
     4,
     6
-], findFinishingTimes(genGraph()));
-const anotherGraph=genGraph();
-assert.deepEqual({ '3': [ 9, 6, 3 ], '7': [ 4, 1, 7 ], '8': [ 2, 5, 8 ]}, findSCCs(anotherGraph));
+], findFinishingTimes(genExampleGraph()));
+const anotherGraph = genExampleGraph();
+assert.deepEqual({'3': [9, 6, 3], '7': [4, 1, 7], '8': [2, 5, 8]}, findSCCs(anotherGraph));
+
+assert.deepEqual([], findFinishingTimes(genGraphWithEdges([])));
+assert.deepEqual({}, findSCCs(genGraphWithEdges([])));
+
+assert.deepEqual([1, 2], findFinishingTimes(genGraphWithEdges([[1, 2]])));
+
+assert.deepEqual([3, 2, 1, 4, 5], findFinishingTimes(genGraphWithEdges([
+    [2, 1],
+    [1, 3],
+    [3, 2],
+    [1, 4],
+    [4, 5]
+])));
+assert.deepEqual({1: [1, 2, 3], 4: [4], 5: [5]}, findSCCs(genGraphWithEdges([
+    [2, 1],
+    [1, 3],
+    [3, 2],
+    [1, 4],
+    [4, 5]
+])));
+assert.deepEqual({1: [1], 2: [2]}, findSCCs(genGraphWithEdges([[1, 2]])));
+
+assert.deepEqual({'1': [2, 1]}, findSCCs(genGraphWithEdges([[1, 2], [2, 1]])));
+
 console.log('Pass');
