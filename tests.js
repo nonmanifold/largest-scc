@@ -2,6 +2,8 @@ const scc = require('./scc');
 const assert = require('assert');
 const addEdge = scc.addEdge;
 const Vertex = scc.Vertex;
+const reverseEdges = scc.reverseEdges;
+const nodesToEdgesArr = scc.nodesToEdgesArr;
 const edges = [
     [1, 4],
     [7, 1],
@@ -32,6 +34,29 @@ assert.deepEqual(new Vertex([3, 8], [9]), nodes[6]);
 assert.deepEqual(new Vertex([4, 9], [1]), nodes[7]);
 assert.deepEqual(new Vertex([2], [6, 5]), nodes[8]);
 assert.deepEqual(new Vertex([6], [7, 3]), nodes[9]);
+
+const edgesSerializedBack = nodesToEdgesArr(nodes);
+assert.deepEqual([1, 4], edgesSerializedBack[0]);
+assert.deepEqual([
+        [1, 4],
+        [2, 8],
+        [3, 6],
+        [4, 7],
+        [5, 2],
+        [6, 9],
+        [7, 1],
+        [8, 6],
+        [8, 5],
+        [9, 7],
+        [9, 3]
+    ],
+    edgesSerializedBack
+);
+
+
+const nodesToRev = {};
+addEdge(nodesToRev, 1, 2);
+assert.deepEqual([[2, 1]], nodesToEdgesArr(reverseEdges(nodesToRev)));
 
 assert.equal(true, false);
 

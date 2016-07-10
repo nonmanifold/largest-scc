@@ -15,6 +15,32 @@ function addEdge(nodes, vertTail, vertHead) {
     nodes[vertHead].in.push(vertTail);// store a node pointing here
 }
 
+function nodesToEdgesArr(nodes) {
+    const verts = Object.keys(nodes);
+    const edges = [];
+    for (var i = 0; i < verts.length; i++) {
+        var vertLabel = parseInt(verts[i]);
+        var outgoing = nodes[vertLabel].out;
+        //taking only outgoing:
+        for (var j = 0; j < outgoing.length; j++) {
+            var outLabel = outgoing[j];
+            edges.push([vertLabel, outLabel])
+        }
+    }
+    return edges;
+}
+
+function reverseEdges(nodes) {
+    const edges = nodesToEdgesArr(nodes);
+    const nodesWithReversedEdges = {};
+    for (var i = 0; i < edges.length; i++) {
+        var edge = edges[i];
+        // add edge reversed into new graph
+        addEdge(nodesWithReversedEdges, edge[1], edge[0]);
+    }
+    return nodesWithReversedEdges;
+}
+
 function findSCC(nodes) {
 
 }
@@ -22,5 +48,7 @@ function findSCC(nodes) {
 module.exports = {
     Vertex: Vertex,
     findSCC: findSCC,
-    addEdge: addEdge
+    addEdge: addEdge,
+    nodesToEdgesArr: nodesToEdgesArr,
+    reverseEdges: reverseEdges
 };
