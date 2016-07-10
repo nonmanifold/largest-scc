@@ -1,0 +1,11 @@
+{
+  "name": "largest-scc",
+  "version": "1.0.0",
+  "description": "Computing largest SCC(strongly connected components) of the directed graph.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node tests.js"
+  },
+  "author": "Nick Serebrennikov",
+  "license": "MIT"
+}

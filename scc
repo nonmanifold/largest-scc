@@ -1,0 +1,26 @@
+function Vertex(inbound, outbound) {
+    this.in = inbound || [];
+    this.out = outbound || [];
+    this.visited = false;
+}
+
+function addEdge(nodes, vertTail, vertHead) {
+    if (!nodes.hasOwnProperty(vertTail)) {
+        nodes[vertTail] = new Vertex(); // create vertex
+    }
+    nodes[vertTail].out.push(vertHead);//add pointer to another node
+    if (!nodes.hasOwnProperty(vertHead)) {
+        nodes[vertHead] = new Vertex();//create vertex to point to
+    }
+    nodes[vertHead].in.push(vertTail);// store a node pointing here
+}
+
+function findSCC(nodes) {
+
+}
+
+module.exports = {
+    Vertex: Vertex,
+    findSCC: findSCC,
+    addEdge: addEdge
+};

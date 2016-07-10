@@ -1,0 +1,38 @@
+const scc = require('./scc');
+const assert = require('assert');
+const addEdge = scc.addEdge;
+const Vertex = scc.Vertex;
+const edges = [
+    [1, 4],
+    [7, 1],
+    [4, 7],
+
+    [9, 7],
+
+    [6, 9],
+    [9, 3],
+    [3, 6],
+
+    [8, 6],
+
+    [8, 5],
+    [5, 2],
+    [2, 8]
+];
+const nodes = {};
+edges.map(function (edge) {
+    addEdge(nodes, edge[0], edge[1]);
+});
+assert.deepEqual(new Vertex([7], [4]), nodes[1]);
+assert.deepEqual(new Vertex([5], [8]), nodes[2]);
+assert.deepEqual(new Vertex([9], [6]), nodes[3]);
+assert.deepEqual(new Vertex([1], [7]), nodes[4]);
+assert.deepEqual(new Vertex([8], [2]), nodes[5]);
+assert.deepEqual(new Vertex([3, 8], [9]), nodes[6]);
+assert.deepEqual(new Vertex([4, 9], [1]), nodes[7]);
+assert.deepEqual(new Vertex([2], [6, 5]), nodes[8]);
+assert.deepEqual(new Vertex([6], [7, 3]), nodes[9]);
+
+assert.equal(true, false);
+
+console.log('Pass');
