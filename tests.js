@@ -4,6 +4,7 @@ const addEdge = scc.addEdge;
 const Vertex = scc.Vertex;
 const reverseEdges = scc.reverseEdges;
 const nodesToEdgesArr = scc.nodesToEdgesArr;
+const DFS = scc.DFS;
 const edges = [
     [1, 4],
     [7, 1],
@@ -35,6 +36,15 @@ assert.deepEqual(new Vertex([4, 9], [1]), nodes[7]);
 assert.deepEqual(new Vertex([2], [6, 5]), nodes[8]);
 assert.deepEqual(new Vertex([6], [7, 3]), nodes[9]);
 
+// check that if we start at node with label 8, we visit all nodes with DFS:
+DFS(nodes, nodes['8']);
+const visitFlags = [];
+const nodeIds = Object.keys(nodes);
+nodeIds.forEach(function (nodeId) {
+    visitFlags.push(nodes[nodeId].visited);
+});
+assert.deepEqual([true, true, true, true, true, true, true, true, true], visitFlags);
+
 const edgesSerializedBack = nodesToEdgesArr(nodes);
 assert.deepEqual([1, 4], edgesSerializedBack[0]);
 assert.deepEqual([
@@ -57,7 +67,5 @@ assert.deepEqual([
 const nodesToRev = {};
 addEdge(nodesToRev, 1, 2);
 assert.deepEqual([[2, 1]], nodesToEdgesArr(reverseEdges(nodesToRev)));
-
-assert.equal(true, false);
 
 console.log('Pass');

@@ -41,6 +41,17 @@ function reverseEdges(nodes) {
     return nodesWithReversedEdges;
 }
 
+function DFS(nodes, currentVertex) {
+    currentVertex.visited=true;
+    for(var i=0;i<currentVertex.out.length;i++){
+        var outLabel=currentVertex.out[i];
+        var out=nodes[outLabel];
+        if(out.visited!==true){
+            DFS(nodes, out);
+        }
+    }
+}
+
 function findSCC(nodes) {
 
 }
@@ -50,5 +61,6 @@ module.exports = {
     findSCC: findSCC,
     addEdge: addEdge,
     nodesToEdgesArr: nodesToEdgesArr,
-    reverseEdges: reverseEdges
+    reverseEdges: reverseEdges,
+    DFS:DFS
 };
