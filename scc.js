@@ -3,6 +3,7 @@ function Vertex(inbound, outbound) {
     this.out = outbound || [];
     this.visited = false;
 }
+var maxDepth = 0;
 
 function addEdge(nodes, vertTail, vertHead) {
     if (vertHead == vertTail) {
@@ -47,19 +48,22 @@ function reverseEdges(nodes) {
     return nodesWithReversedEdges;
 }
 
-function DFS(nodes, vertexLabel, reverseEdges, onNewNodeExplored) {
+function DFS(nodes, vertexLabel, reverseEdges, onNewNodeExplored, depth) {
     const currentVertex = nodes[vertexLabel];
     if (currentVertex.visited) {
         return;
     }
     currentVertex.visited = true;
-
+    if (depth > maxDepth) {
+        maxDepth = depth;
+        console.log(maxDepth, vertexLabel);
+    }
     const neighbors = reverseEdges ? currentVertex.in : currentVertex.out;
     for (var i = 0; i < neighbors.length; i++) {
         var neighborLabel = neighbors[i];
         var neighbor = nodes[neighborLabel];
         if (neighbor.visited === false) {
-            DFS(nodes, neighborLabel, reverseEdges, onNewNodeExplored);
+            DFS(nodes, neighborLabel, reverseEdges, onNewNodeExplored, depth + 1);
         }
     }
     onNewNodeExplored(vertexLabel);
@@ -81,7 +85,7 @@ function findFinishingTimes(Graph) {
 
     for (var i = 0; i < labels.length; i++) {
         var labelIth = labels[i];
-        DFS(Graph, labelIth, true, onNewNodeExplored);
+        DFS(Graph, labelIth, true, onNewNodeExplored, 1);
     }
     return finishingTimes;
 }
@@ -98,14 +102,14 @@ function findLeaders(Graph, finishingTimes) {
     };
     // being a little sloppy, we re-set 'visited' flag on the entire graph:
     for (var j = 0; j < finishingTimes.length; j++) {
-        s = finishingTimes[j];
-        Graph[s].visited = false;
+        Graph[finishingTimes[j]].visited = false;
     }
 
     for (var i = 0; i < finishingTimes.length; i++) {
-        s = finishingTimes[i];
-        if (Graph[s].visited === false) {
-            DFS(Graph, s, false, onNewNodeExplored);
+        var currentVertexlabel = finishingTimes[i];
+        if (Graph[currentVertexlabel].visited === false) {
+            s = currentVertexlabel;
+            DFS(Graph, s, false, onNewNodeExplored, 1);
         }
     }
     return leaders;
@@ -123,6 +127,17 @@ function findSCCs(Graph) {
     return leaders;
 }
 
+function countSSCs(nodes) {
+    const leaders = findSCCs(nodes);
+    const sccSizes = [];
+    const leaderIds = Object.keys(leaders);
+    for (var i = 0; i < leaderIds.length; i++) {
+        sccSizes.push(leaders[leaderIds[i]].length);
+    }
+    const sortedSccSizes = sccSizes.sort().reverse();
+    return sortedSccSizes;
+}
+
 module.exports = {
     Vertex: Vertex,
     findSCCs: findSCCs,
@@ -131,5 +146,6 @@ module.exports = {
     reverseEdges: reverseEdges,
     findFinishingTimes: findFinishingTimes,
     findLeaders: findLeaders,
-    DFS: DFS
+    DFS: DFS,
+    countSSCs: countSSCs
 };
