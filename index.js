@@ -26,7 +26,7 @@ rl.on('line', function (line) {
 rl.on('close', function () {
     console.log('Attempting to count SCCs in graph with ' + Object.keys(nodes).length + ' nodes, and ' + numEdges + ' edges');
     setImmediate(function () {
-        const sortedSccSizes=countSSCs(nodes);
+        const sortedSccSizes = countSSCs(nodes);
         const largestSCCsizes = sortedSccSizes.slice(0, 5);
         console.log('maximum SCCs sizes:' + largestSCCsizes);
     });

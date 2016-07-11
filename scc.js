@@ -48,25 +48,30 @@ function reverseEdges(nodes) {
     return nodesWithReversedEdges;
 }
 
-function DFS(nodes, vertexLabel, reverseEdges, onNewNodeExplored, depth) {
-    const currentVertex = nodes[vertexLabel];
-    if (currentVertex.visited) {
+function DFS(nodes, vertexLabel, reverseEdges, onNewNodeExplored, onNodeEncounted) {
+    const startingVertex = nodes[vertexLabel];
+    if (startingVertex.visited) {
         return;
     }
-    currentVertex.visited = true;
-    if (depth > maxDepth) {
-        maxDepth = depth;
-        console.log(maxDepth, vertexLabel);
-    }
-    const neighbors = reverseEdges ? currentVertex.in : currentVertex.out;
-    for (var i = 0; i < neighbors.length; i++) {
-        var neighborLabel = neighbors[i];
-        var neighbor = nodes[neighborLabel];
-        if (neighbor.visited === false) {
-            DFS(nodes, neighborLabel, reverseEdges, onNewNodeExplored, depth + 1);
+    startingVertex.visited = true;
+
+    const stack = [];
+    stack.push(vertexLabel);
+    while (stack.length > 0) {
+        var currentVertexLabel = stack.pop();
+        onNodeEncounted && onNodeEncounted(currentVertexLabel);
+        var currentVertex = nodes[currentVertexLabel];
+        var neighbors = reverseEdges ? currentVertex.in : currentVertex.out;
+        for (var i = 0; i < neighbors.length; i++) {
+            var neighborLabel = neighbors[i];
+            var neighbor = nodes[neighborLabel];
+            if (neighbor.visited === false) {
+                neighbor.visited = true;
+                stack.push(neighborLabel);
+            }
         }
+        onNewNodeExplored && onNewNodeExplored(currentVertexLabel);
     }
-    onNewNodeExplored(vertexLabel);
 }
 function findFinishingTimes(Graph) {
     console.log('finding finishing times');
@@ -80,21 +85,21 @@ function findFinishingTimes(Graph) {
     var t = 0;
     const onNewNodeExplored = function onNewNodeExplored(vertexLabel) {
         t++;
-        finishingTimes[t-1] = parseInt(vertexLabel);
+        finishingTimes[t - 1] = parseInt(vertexLabel);
     };
 
     for (var i = 0; i < labels.length; i++) {
         var labelIth = labels[i];
-        DFS(Graph, labelIth, true, onNewNodeExplored, 1);
+        DFS(Graph, labelIth, true, onNewNodeExplored);
     }
-    return finishingTimes.reverse();
+    return finishingTimes;
 }
 
 function findLeaders(Graph, finishingTimes) {
     console.log('finding leaders');
     const leaders = {};
     var s = null;
-    const onNewNodeExplored = function onNewNodeExplored(vertexLabel) {
+    const onNodeEncounted = function onNodeEncounted(vertexLabel) {
         if (!leaders.hasOwnProperty(s)) {
             leaders[s] = [];
         }
@@ -109,7 +114,7 @@ function findLeaders(Graph, finishingTimes) {
         var currentVertexlabel = finishingTimes[i];
         if (Graph[currentVertexlabel].visited === false) {
             s = currentVertexlabel;
-            DFS(Graph, s, false, onNewNodeExplored, 1);
+            DFS(Graph, s, false, false, onNodeEncounted);
         }
     }
     return leaders;
