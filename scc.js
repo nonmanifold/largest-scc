@@ -80,14 +80,14 @@ function findFinishingTimes(Graph) {
     var t = 0;
     const onNewNodeExplored = function onNewNodeExplored(vertexLabel) {
         t++;
-        finishingTimes[parseInt(vertexLabel) - 1] = t;
+        finishingTimes[t-1] = parseInt(vertexLabel);
     };
 
     for (var i = 0; i < labels.length; i++) {
         var labelIth = labels[i];
         DFS(Graph, labelIth, true, onNewNodeExplored, 1);
     }
-    return finishingTimes;
+    return finishingTimes.reverse();
 }
 
 function findLeaders(Graph, finishingTimes) {
