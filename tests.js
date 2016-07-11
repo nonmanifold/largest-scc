@@ -101,7 +101,73 @@ assert.deepEqual([], findFinishingTimes(genGraphWithEdges([])));
 assert.deepEqual({}, findSCCs(genGraphWithEdges([])));
 
 assert.deepEqual([1, 2], findFinishingTimes(genGraphWithEdges([[1, 2]])));
+assert.deepEqual([null], findFinishingTimes(genGraphWithEdges([
+    [1, 2],
+    [2, 6],
+    [2, 3],
+    [2, 4],
+    [3, 1],
+    [3, 4],
+    [4, 5],
+    [5, 4],
+    [6, 5],
+    [6, 7],
+    [7, 6],
+    [7, 8],
+    [8, 5],
+    [8, 7]
+])));
+//SCCs 3,3,2
 
+assert.deepEqual([null], findFinishingTimes(genGraphWithEdges([
+    [1, 2],
+    [2, 3],
+    [3, 1],
+    [3, 4],
+    [5, 4],
+    [6, 4],
+    [8, 6],
+    [6, 7],
+    [7, 8]
+])));
+//SCCs 3,3,1,1
+assert.deepEqual([null], findFinishingTimes(genGraphWithEdges([
+    [1, 2],
+    [2, 3],
+    [3, 1],
+    [3, 4],
+    [5, 4],
+    [6, 4],
+    [8, 6],
+    [6, 7],
+    [7, 8],
+    [4, 3],
+    [4, 6]
+])));
+//SCCs 7,1
+assert.deepEqual([null], findFinishingTimes(genGraphWithEdges([
+    [1, 2],
+    [2, 3],
+    [2, 4],
+    [2, 5],
+    [3, 6],
+    [4, 5],
+    [4, 7],
+    [5, 2],
+    [5, 6],
+    [5, 7],
+    [6, 3],
+    [6, 8],
+    [7, 8],
+    [7, 10],
+    [8, 7],
+    [9, 7],
+    [10, 9],
+    [10, 11],
+    [11, 12],
+    [12, 10],
+])));
+//SCCs 6,3,2,1
 assert.deepEqual([3, 2, 1, 4, 5], findFinishingTimes(genGraphWithEdges([
     [2, 1],
     [1, 3],
