@@ -49,6 +49,8 @@ assert.deepEqual(new Vertex([4, 9], [1]), nodes[7]);
 assert.deepEqual(new Vertex([2], [6, 5]), nodes[8]);
 assert.deepEqual(new Vertex([6], [7, 3]), nodes[9]);
 
+assert.deepEqual([7, 4, 1, 9, 6, 8, 2, 5, 3], findFinishingTimes(genExampleGraph()));
+
 // check that if we start at node with label 8, we visit all nodes with DFS:
 const exploredNodesLabels = [];
 DFS(nodes, 8, false, function (nodeLabel) {
@@ -60,7 +62,7 @@ nodeIds.forEach(function (nodeId) {
     visitFlags.push(nodes[nodeId].visited);
 });
 assert.deepEqual([true, true, true, true, true, true, true, true, true], visitFlags);
-//assert.deepEqual([4, 1, 7, 3, 9, 6, 2, 5, 8], exploredNodesLabels);
+assert.deepEqual([4, 1, 7, 3, 9, 6, 2, 5, 8], exploredNodesLabels);
 
 const edgesSerializedBack = nodesToEdgesArr(nodes);
 assert.deepEqual([1, 4], edgesSerializedBack[0]);
@@ -85,7 +87,7 @@ const nodesToRev = {};
 addEdge(nodesToRev, 1, 2);
 assert.deepEqual([[2, 1]], nodesToEdgesArr(reverseEdges(nodesToRev)));
 
-assert.deepEqual([7, 3, 1, 8, 2, 5, 9, 4, 6], findFinishingTimes(genExampleGraph()));
+assert.deepEqual([7, 4, 1, 9, 6, 8, 2, 5, 3], findFinishingTimes(genExampleGraph()));
 
 const anotherGraph = genExampleGraph();
 //assert.deepEqual({'3': [9, 6, 3], '7': [4, 1, 7], '8': [2, 5, 8]}, findSCCs(anotherGraph));
