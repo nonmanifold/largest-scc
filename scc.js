@@ -48,6 +48,27 @@ function reverseEdges(nodes) {
     return nodesWithReversedEdges;
 }
 
+function DFSRecursive(nodes, vertexLabel, reverseEdges, onNewNodeExplored, depth) {
+    const currentVertex = nodes[vertexLabel];
+    if (currentVertex.visited) {
+        return;
+    }
+    currentVertex.visited = true;
+    if (depth > maxDepth) {
+        maxDepth = depth;
+        console.log('depth:' + maxDepth);
+    }
+    const neighbors = reverseEdges ? currentVertex.in : currentVertex.out;
+    for (var i = 0; i < neighbors.length; i++) {
+        var neighborLabel = neighbors[i];
+        var neighbor = nodes[neighborLabel];
+        if (neighbor.visited === false) {
+            DFSRecursive(nodes, neighborLabel, reverseEdges, onNewNodeExplored, depth + 1);
+        }
+    }
+    onNewNodeExplored(vertexLabel);
+}
+
 function DFS(nodes, vertexLabel, reverseEdges, onNewNodeExplored) {
     const startingVertex = nodes[vertexLabel];
     if (startingVertex.visited) {
@@ -78,7 +99,7 @@ function DFS(nodes, vertexLabel, reverseEdges, onNewNodeExplored) {
         }
     }
 }
-function findFinishingTimes(Graph) {
+function findFinishingTimes(Graph, useRecursion) {
     console.log('finding finishing times');
     var labels = Object.keys(Graph).map(function (label) {
         return parseInt(label);
@@ -91,15 +112,15 @@ function findFinishingTimes(Graph) {
     const onNewNodeExplored = function onNewNodeExplored(vertexLabel, stackSize) {
         finishingTimes.push(parseInt(vertexLabel));
     };
-
+    const DFSimpl = useRecursion ? DFSRecursive : DFS;
     for (var i = 0; i < labels.length; i++) {
         var labelIth = labels[i];
-        DFS(Graph, labelIth, true, onNewNodeExplored);
+        DFSimpl(Graph, labelIth, true, onNewNodeExplored, 1);
     }
     return finishingTimes.reverse();
 }
 
-function findLeaders(Graph, finishingTimes) {
+function findLeaders(Graph, finishingTimes, useRecursion) {
     console.log('finding leaders');
     const leaders = {};
     var s = null;
@@ -113,31 +134,31 @@ function findLeaders(Graph, finishingTimes) {
     for (var j = 0; j < finishingTimes.length; j++) {
         Graph[finishingTimes[j]].visited = false;
     }
-
+    const DFSimpl = useRecursion ? DFSRecursive : DFS;
     for (var i = 0; i < finishingTimes.length; i++) {
         var currentVertexlabel = finishingTimes[i];
         if (Graph[currentVertexlabel].visited === false) {
             s = currentVertexlabel;
-            DFS(Graph, s, false, onNewNodeExplored);
+            DFSimpl(Graph, s, false, onNewNodeExplored, 1);
         }
     }
     return leaders;
 }
 
-function findSCCs(Graph) {
+function findSCCs(Graph, useRecursion) {
     //Kosaraju's two pass:
     // 1) run Depth-first search (aka DFS) on the reversed graph, to compute ordering of nodes
     // by finding "finishing time" for nodes
-    const finishingTimes = findFinishingTimes(Graph);
+    const finishingTimes = findFinishingTimes(Graph, useRecursion);
 
     // 2) run DFS on original graph, finding Strongly Connected Components (SCCs)
-    const leaders = findLeaders(Graph, finishingTimes);
+    const leaders = findLeaders(Graph, finishingTimes, useRecursion);
     // return leaders object, containing information about vertices with the same leaderId
     return leaders;
 }
 
-function countSSCs(nodes) {
-    const leaders = findSCCs(nodes);
+function countSSCs(nodes, useRecursion) {
+    const leaders = findSCCs(nodes, useRecursion);
     const sccSizes = [];
     const leaderIds = Object.keys(leaders);
     for (var i = 0; i < leaderIds.length; i++) {
