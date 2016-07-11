@@ -36,5 +36,7 @@ rl.on('line', function (line) {
 
 rl.on('close', function () {
     console.log('Attempting to count SCCs in graph with ' + Object.keys(nodes).length + ' nodes, and ' + numEdges + ' edges');
-    counter(nodes);
+    setImmediate(function () {
+        counter(nodes);
+    });
 });
